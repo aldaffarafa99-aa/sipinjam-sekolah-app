@@ -37,9 +37,20 @@ class AuthenticationTest extends TestCase
         $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
-        ]);
+        ])->assertSessionHasErrors('email');
 
         $this->assertGuest();
+    }
+
+    public function test_login_rejects_empty_fields_and_invalid_email(): void
+    {
+        $this->post('/login', [])
+            ->assertSessionHasErrors(['email', 'password']);
+
+        $this->post('/login', [
+            'email' => 'not-an-email',
+            'password' => 'password',
+        ])->assertSessionHasErrors('email');
     }
 
     public function test_users_can_logout(): void
@@ -50,5 +61,15 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_authenticated_users_are_redirected_away_from_auth_pages(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/login')
+            ->assertRedirect('/dashboard');
+
+        $this->get('/register')
+            ->assertRedirect('/dashboard');
     }
 }

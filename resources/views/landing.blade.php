@@ -32,11 +32,11 @@
         }
 
         .nav-glass {
-            background: rgba(15, 23, 42, 0.26);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(148, 163, 184, 0.28);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
         }
 
         .hero-bg {
@@ -130,42 +130,149 @@
         .search-result:hover {
             background: rgba(99, 102, 241, 0.08);
         }
+
+        .ambient-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            isolation: isolate;
+        }
+
+        .ambient-background::before,
+        .ambient-background::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            pointer-events: none;
+        }
+
+        .ambient-background::before {
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.045) 1px, transparent 1px);
+            background-size: 52px 52px;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 82%);
+        }
+
+        .ambient-background::after {
+            background-image:
+                radial-gradient(circle, rgba(99, 102, 241, 0.24) 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(14, 165, 233, 0.18) 1px, transparent 1.5px);
+            background-position: 0 0, 34px 38px;
+            background-size: 76px 76px, 92px 92px;
+            opacity: 0.3;
+            mask-image: linear-gradient(to bottom, black, transparent 88%);
+        }
+
+        .ambient-orb {
+            translate: var(--pointer-x, 0px) var(--pointer-y, 0px);
+            transition: translate 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+            opacity: 0.82;
+            animation: ambient-float 23s ease-in-out infinite alternate;
+        }
+
+        .ambient-orb--indigo {
+            animation-duration: 21s;
+        }
+
+        .ambient-orb--violet {
+            animation-duration: 27s;
+            animation-delay: -12s;
+            animation-name: ambient-float-reverse;
+        }
+
+        .ambient-orb--cyan {
+            animation-duration: 24s;
+            animation-delay: -8s;
+            animation-name: ambient-float-gentle;
+        }
+
+        @keyframes ambient-float {
+            from { transform: translate3d(-24px, -20px, 0) scale(0.96); opacity: 0.7; }
+            to { transform: translate3d(34px, 38px, 0) scale(1.07); opacity: 0.95; }
+        }
+
+        @keyframes ambient-float-reverse {
+            from { transform: translate3d(26px, -24px, 0) scale(1.04); opacity: 0.76; }
+            to { transform: translate3d(-38px, 30px, 0) scale(0.94); opacity: 0.96; }
+        }
+
+        @keyframes ambient-float-gentle {
+            from { transform: translate3d(-18px, 22px, 0) scale(0.96); opacity: 0.72; }
+            to { transform: translate3d(24px, -32px, 0) scale(1.06); opacity: 0.94; }
+        }
+
+        main,
+        footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 640px) {
+            .ambient-background::before {
+                background-size: 64px 64px;
+            }
+
+            .ambient-background::after {
+                opacity: 0.16;
+            }
+
+            .ambient-orb--indigo,
+            .ambient-orb--violet,
+            .ambient-orb--cyan {
+                scale: 0.78;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-orb {
+                animation: none;
+                transition: none;
+                translate: none;
+            }
+        }
     </style>
 </head>
 <body class="relative min-h-screen antialiased text-slate-800">
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
-        <div class="absolute -left-20 top-24 h-72 w-72 rounded-full bg-indigo-300/25 blur-3xl"></div>
-        <div class="absolute right-0 top-0 h-80 w-80 rounded-full bg-violet-300/20 blur-3xl"></div>
-        <div class="absolute bottom-10 left-1/3 h-72 w-72 rounded-full bg-cyan-200/25 blur-3xl"></div>
+    <div class="ambient-background">
+        <div class="ambient-orb ambient-orb--indigo absolute -left-20 top-24 h-80 w-80 rounded-full bg-indigo-300/35 blur-3xl"></div>
+        <div class="ambient-orb ambient-orb--violet absolute right-0 top-0 h-96 w-96 rounded-full bg-violet-300/30 blur-3xl"></div>
+        <div class="ambient-orb ambient-orb--cyan absolute bottom-10 left-1/3 h-80 w-80 rounded-full bg-cyan-200/35 blur-3xl"></div>
     </div>
 
     <header class="fixed inset-x-0 top-0 z-50 pt-5">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <nav class="nav-glass mx-auto flex max-w-6xl items-center justify-between rounded-full px-4 py-3 sm:px-6">
                 <a href="#top" class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-cyan-400 text-lg font-black text-white shadow-[0_12px_30px_rgba(99,102,241,0.38)]">S</div>
+                    <img src="{{ asset('images/logo-sipinjam.jpg') }}" alt="" class="h-10 w-12 shrink-0 rounded-xl bg-white object-contain p-0.5 sm:w-24" />
                     <div class="leading-none">
-                        <div class="text-sm font-black tracking-tight text-white">Peminjaman Barang</div>
-                        <div class="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Sekolah</div>
+                        <div class="text-sm font-black tracking-tight text-slate-900">Peminjaman Barang</div>
+                        <div class="mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-600">Sekolah</div>
                     </div>
                 </a>
 
-                <div class="hidden items-center gap-8 text-sm font-medium text-slate-200 md:flex">
-                    <a href="#fitur" class="transition hover:text-white">Fitur</a>
-                    <a href="#katalog" class="transition hover:text-white">Katalog Cepat</a>
-                    <a href="#cara-pinjam" class="transition hover:text-white">Cara Pinjam</a>
-                    <a href="#faq" class="transition hover:text-white">FAQ</a>
+                <div class="hidden items-center gap-8 text-sm font-medium text-slate-700 md:flex">
+                    <a href="#fitur" class="transition hover:text-indigo-700">Fitur</a>
+                    <a href="#katalog" class="transition hover:text-indigo-700">Katalog Cepat</a>
+                    <a href="#cara-pinjam" class="transition hover:text-indigo-700">Cara Pinjam</a>
+                    <a href="#faq" class="transition hover:text-indigo-700">FAQ</a>
                 </div>
 
                 @if (auth()->check())
                     <a href="{{ route('dashboard') }}" class="primary-btn inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white sm:px-5">
                         Dashboard
-                        <span aria-hidden="true">?</span>
+                        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                            <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="primary-btn inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white sm:px-5">
                         Masuk / Pinjam Sekarang
-                        <span aria-hidden="true">?</span>
+                        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                            <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </a>
                 @endif
             </nav>
@@ -191,10 +298,13 @@
                             Sistem manajemen inventaris pintar untuk siswa, guru, dan sarpras sekolah.
                         </p>
 
-                        <form id="landing-search-form" class="mt-8">
+                        <form id="landing-search-form" class="mt-10">
                             <div class="rounded-[1.7rem] border border-indigo-200/60 bg-slate-950/90 p-3 shadow-[0_24px_40px_rgba(15,23,42,0.18)]">
                                 <div class="flex items-center gap-3 rounded-[1.2rem] border border-indigo-200/20 bg-slate-900/80 p-3">
-                                    <span class="text-xl text-indigo-300">?</span>
+                                    <svg aria-hidden="true" class="h-5 w-5 shrink-0 text-indigo-300" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8" />
+                                        <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                    </svg>
                                     <input
                                         id="landing-search"
                                         type="text"
@@ -213,60 +323,80 @@
                         </form>
 
                         <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-                            <span class="rounded-full border border-emerald-200 bg-emerald-100/90 px-3 py-1 font-medium text-emerald-700">? 98% ACC Instan</span>
-                            <span class="rounded-full border border-indigo-200 bg-indigo-100/90 px-3 py-1 font-medium text-indigo-700">?? {{ number_format($barangTersedia, 0, ',', '.') }} Unit Siap Dipinjam</span>
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-100/90 px-3 py-1 font-medium text-emerald-700">
+                                <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                                    <path d="m4.5 10.2 3.4 3.3 7.6-7.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                Persetujuan oleh petugas
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-100/90 px-3 py-1 font-medium text-indigo-700">
+                                <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                                    <path d="M3.5 6.5h13v10h-13zM6.5 6.5v-3h7v3m-7 4h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                {{ number_format($barangTersedia, 0, ',', '.') }} Unit Siap Dipinjam
+                            </span>
                         </div>
                     </div>
 
                     <div class="relative z-10">
                         <div class="relative mx-auto max-w-xl">
+                            @php($weeklyScale = max(1, max($weeklyLoans)))
                             <div class="glass rounded-[2rem] p-5 text-white shadow-[0_35px_75px_rgba(79,70,229,0.18)]">
                                 <div class="flex items-center justify-between border-b border-white/10 pb-4">
                                     <div>
-                                        <p class="text-[10px] uppercase tracking-[0.28em] text-slate-300">Inventaris terkini</p>
+                                        <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-100">Inventaris terkini</p>
                                         <h2 class="mt-2 text-3xl font-black tracking-[-0.05em] text-white">{{ number_format($totalBarang, 0, ',', '.') }}</h2>
                                     </div>
-                                    <div class="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm font-semibold text-emerald-300">? 12.4%</div>
+                                    <div class="inline-flex items-center gap-1 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-xs font-semibold text-emerald-200">
+                                        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                                            <circle cx="10" cy="10" r="5" fill="currentColor" />
+                                        </svg>
+                                        Data aktif
+                                    </div>
                                 </div>
 
-                                <div class="mt-6 flex items-end justify-between gap-3">
+                                <div class="mt-6 flex items-end justify-between gap-3" role="img" aria-label="Aktivitas peminjaman tujuh hari terakhir">
                                     <div class="flex h-28 w-full items-end gap-2">
-                                        <div class="h-1/3 flex-1 rounded-t-xl bg-gradient-to-t from-indigo-500 to-indigo-300"></div>
-                                        <div class="h-2/5 flex-1 rounded-t-xl bg-gradient-to-t from-violet-500 to-violet-300"></div>
-                                        <div class="h-1/2 flex-1 rounded-t-xl bg-gradient-to-t from-cyan-400 to-cyan-200"></div>
-                                        <div class="h-2/3 flex-1 rounded-t-xl bg-gradient-to-t from-indigo-500 to-violet-300"></div>
-                                        <div class="h-3/5 flex-1 rounded-t-xl bg-gradient-to-t from-emerald-400 to-emerald-300"></div>
-                                        <div class="h-5/6 flex-1 rounded-t-xl bg-gradient-to-t from-indigo-400 to-cyan-300"></div>
-                                        <div class="h-4/5 flex-1 rounded-t-xl bg-gradient-to-t from-violet-500 to-indigo-300"></div>
+                                        @foreach ($weeklyLoans as $loan)
+                                            <div class="flex-1 rounded-t-xl bg-gradient-to-t from-indigo-500 to-cyan-300" style="height: {{ $loan > 0 ? max(8, ($loan / $weeklyScale) * 100) : 0 }}%"></div>
+                                        @endforeach
                                     </div>
                                 </div>
 
                                 <div class="mt-5 grid grid-cols-3 gap-3 text-xs text-slate-300">
                                     <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
-                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-400">Tersedia</div>
+                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-300">Tersedia</div>
                                         <div class="mt-2 text-xl font-bold text-emerald-300">{{ number_format($barangTersedia, 0, ',', '.') }}</div>
                                     </div>
                                     <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
-                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-400">Dipinjam</div>
+                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-300">Dipinjam</div>
                                         <div class="mt-2 text-xl font-bold text-amber-300">{{ number_format($sedangDipinjam, 0, ',', '.') }}</div>
                                     </div>
                                     <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
-                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-400">Kategori</div>
+                                        <div class="text-[10px] uppercase tracking-[0.2em] text-slate-300">Kategori</div>
                                         <div class="mt-2 text-xl font-bold text-cyan-300">{{ $kategoriBarang }}</div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="absolute -left-6 top-14 flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-left shadow-[0_20px_40px_rgba(16,185,129,0.18)] backdrop-blur-xl">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/20 text-xl">?</div>
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-400/20 text-emerald-100">
+                                    <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                        <path d="m5 12.5 4.2 4.2L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
                                 <div>
-                                    <div class="text-[10px] uppercase tracking-[0.18em] text-emerald-200">Disetujui</div>
-                                    <div class="text-sm font-semibold text-white">{{ $barangPopuler->first()?->nama_barang ?? 'Proyektor' }}</div>
+                                    <div class="text-[10px] uppercase tracking-[0.18em] text-emerald-200">Barang populer</div>
+                                    <div class="text-sm font-semibold text-white">{{ $barangPopuler->first()?->nama_barang ?? 'Belum ada data' }}</div>
                                 </div>
                             </div>
 
                             <div class="absolute -right-5 bottom-8 flex items-center gap-3 rounded-2xl border border-indigo-300/20 bg-indigo-500/10 px-4 py-3 text-left shadow-[0_20px_40px_rgba(99,102,241,0.14)] backdrop-blur-xl">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-400/20 text-xl">??</div>
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-400/20 text-indigo-100">
+                                    <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 7h16v13H4zM8 7V4h8v3m-8 5h8m-8 3h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
                                 <div>
                                     <div class="text-[10px] uppercase tracking-[0.18em] text-indigo-200">Stok</div>
                                     <div class="text-sm font-semibold text-white">{{ $barangTersedia > 0 ? number_format($barangTersedia, 0, ',', '.') . ' unit siap dipinjam' : 'Stok kosong' }}</div>
@@ -290,8 +420,8 @@
                         <div class="bento-card h-full rounded-[2rem] border border-slate-200/80 bg-slate-950 p-6 shadow-[0_24px_55px_rgba(15,23,42,0.18)] sm:p-7">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Live status tracking</p>
-                                    <h3 class="mt-2 text-2xl font-bold text-white">Peminjaman aktif</h3>
+                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Contoh alur</p>
+                                    <h3 class="mt-2 text-2xl font-bold text-white">Tahapan peminjaman</h3>
                                 </div>
                                 <div class="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">Online</div>
                             </div>
@@ -301,7 +431,7 @@
                                     <span class="timeline-dot"></span>
                                     <div class="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-3">
                                         <div class="text-[10px] uppercase tracking-[0.2em] text-emerald-200">1. Mengajukan</div>
-                                        <div class="mt-1 text-sm font-semibold text-white">Ayu � Laptop Dell</div>
+                                        <div class="mt-1 text-sm font-semibold text-white">Contoh peminjam &middot; Laptop</div>
                                     </div>
                                 </div>
 
@@ -309,7 +439,7 @@
                                     <span class="timeline-dot"></span>
                                     <div class="rounded-2xl border border-indigo-300/20 bg-indigo-500/10 p-3">
                                         <div class="text-[10px] uppercase tracking-[0.2em] text-indigo-200">2. Disetujui admin</div>
-                                        <div class="mt-1 text-sm font-semibold text-white">Proyektor Epson � 2 unit</div>
+                                        <div class="mt-1 text-sm font-semibold text-white">Proyektor Epson &middot; 2 unit</div>
                                     </div>
                                 </div>
 
@@ -317,7 +447,7 @@
                                     <span class="timeline-dot"></span>
                                     <div class="rounded-2xl border border-amber-300/20 bg-amber-500/10 p-3">
                                         <div class="text-[10px] uppercase tracking-[0.2em] text-amber-200">3. Diambil</div>
-                                        <div class="mt-1 text-sm font-semibold text-white">Kamera Canon � Senin, 09.00</div>
+                                        <div class="mt-1 text-sm font-semibold text-white">Kamera Canon &middot; Senin, 09.00</div>
                                     </div>
                                 </div>
 
@@ -325,7 +455,7 @@
                                     <span class="timeline-dot"></span>
                                     <div class="rounded-2xl border border-slate-400/20 bg-white/5 p-3">
                                         <div class="text-[10px] uppercase tracking-[0.2em] text-slate-300">4. Dikembalikan</div>
-                                        <div class="mt-1 text-sm font-semibold text-white">Speaker Portable � 1 hari lalu</div>
+                                        <div class="mt-1 text-sm font-semibold text-white">Speaker Portable &middot; 1 hari lalu</div>
                                     </div>
                                 </div>
                             </div>
@@ -336,23 +466,29 @@
                         <div class="bento-card h-full rounded-[2rem] border border-slate-200/80 bg-slate-950 p-6 shadow-[0_24px_55px_rgba(15,23,42,0.18)] sm:p-7">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Quick scan</p>
-                                    <h3 class="mt-2 text-2xl font-bold text-white">Pengembalian otomatis</h3>
+                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Pratinjau QR</p>
+                                    <h3 class="mt-2 text-2xl font-bold text-white">Verifikasi pengembalian</h3>
                                 </div>
-                                <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-300/20 bg-indigo-500/10 text-xl text-indigo-200">?</div>
+                                <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-300/20 bg-indigo-500/10 text-indigo-200">
+                                    <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-2zM14 18h2v2h-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
                             </div>
 
                             <div class="mt-8 rounded-[1.8rem] border border-white/10 bg-slate-900/80 p-6 text-center">
                                 <div class="mx-auto flex max-w-[180px] items-center justify-center rounded-2xl border border-indigo-400/20 bg-white/[0.03] p-4 shadow-[inset_0_0_25px_rgba(99,102,241,0.08)]">
-                                    <div class="grid grid-cols-7 gap-1">
-                                        @for ($i = 0; $i < 49; $i++)
-                                            <span class="block h-3 w-3 rounded-sm {{ $i % 3 === 0 || $i % 5 === 0 ? 'bg-indigo-500' : 'bg-slate-700' }}"></span>
-                                        @endfor
-                                    </div>
+                                    <svg aria-hidden="true" class="h-28 w-28 text-indigo-500" viewBox="0 0 49 49" fill="currentColor">
+                                        <path d="M0 0h17v17H0zM32 0h17v17H32zM0 32h17v17H0z" />
+                                        <path d="M4 4h9v9H4zM36 4h9v9h-9zM4 36h9v9H4z" fill="#0f172a" />
+                                        <path d="M23 2h5v5h-5zM20 11h4v4h-4zM23 20h6v6h-6zM32 21h5v5h-5zM41 21h4v4h-4zM19 29h5v5h-5zM27 31h4v4h-4zM35 30h6v6h-6zM21 39h5v5h-5zM29 40h5v5h-5zM39 40h7v7h-7z" />
+                                    </svg>
                                 </div>
 
-                                <p class="mt-5 text-sm text-slate-300">Scan QR code untuk konfirmasi pengembalian</p>
-                                <button class="mt-4 rounded-full border border-indigo-300/25 bg-indigo-500/15 px-4 py-2 text-sm font-semibold text-indigo-100">Scan Sekarang</button>
+                                <p class="mt-5 text-sm text-slate-300">Contoh kode QR pada bukti peminjaman.</p>
+                                <a href="<?php echo e(auth()->check() ? route('dashboard') : route('login')); ?>" class="mt-4 inline-flex rounded-full border border-indigo-300/25 bg-indigo-500/15 px-4 py-2 text-sm font-semibold text-indigo-100 transition hover:bg-indigo-500/25">
+                                    <?php echo e(auth()->check() ? 'Buka dashboard' : 'Masuk ke sistem'); ?>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -364,39 +500,55 @@
                                     <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Katalog barang populer</p>
                                     <h3 class="mt-2 text-2xl font-bold text-white">Barang paling sering dipinjam</h3>
                                 </div>
-                                <a href="{{ route('barang.index') }}" class="text-sm font-medium text-indigo-200 transition hover:text-white">Lihat semua barang ?</a>
+                                <a href="<?php echo e(route('barang.index')); ?>" class="inline-flex items-center gap-1 text-sm font-medium text-indigo-200 transition hover:text-white">
+                                    Lihat semua barang
+                                    <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                                        <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </a>
                             </div>
 
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">
-                                @forelse ($barangPopuler as $barang)
-                                    @php
+                                <?php if ($barangPopuler->isEmpty()): ?>
+                                    <div class="rounded-[1.5rem] border border-dashed border-slate-700 bg-slate-900/60 p-6 text-slate-300">Belum ada data barang yang tersedia.</div>
+                                <?php else: ?>
+                                    <?php foreach ($barangPopuler as $barang): ?>
+                                    <?php
                                         $isAvailable = $barang->status_barang === 'tersedia' && $barang->stok_tersedia > 0;
                                         $borrowRoute = auth()->check()
                                             ? route('peminjaman.create', ['barang_id' => $barang->id])
                                             : route('login');
-                                    @endphp
+                                    ?>
                                     <div class="item-card rounded-[1.5rem] border border-slate-800 bg-slate-900/70 p-4">
                                         <div class="flex items-center justify-between">
-                                            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-400/20 text-2xl">
-                                                {{ $barang->kategori === 'Teknologi' ? '??' : ($barang->kategori === 'Olahraga' ? '??' : ($barang->kategori === 'Audio' ? '??' : '??')) }}
+                                            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-cyan-400/20 text-indigo-200" aria-hidden="true">
+                                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none">
+                                                    <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                                                    <path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                                                </svg>
                                             </div>
                                             <span class="status-pill {{ $isAvailable ? 'status-available' : 'status-borrowed' }}">
-                                                {{ $isAvailable ? 'Tersedia' : 'Dipinjam' }}
+                                                {{ $isAvailable ? 'Tersedia' : 'Tidak tersedia' }}
                                             </span>
                                         </div>
 
                                         <h4 class="mt-4 text-lg font-bold text-white">{{ $barang->nama_barang }}</h4>
                                         <p class="mt-1 text-sm text-slate-300">
-                                            {{ $barang->stok_tersedia }} unit tersedia � {{ $barang->kategori ?? 'Umum' }}
+                                            {{ $barang->stok_tersedia }} unit tersedia &middot; {{ $barang->kategori ?? 'Umum' }}
                                         </p>
 
-                                        <a href="{{ $borrowRoute }}" class="mt-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_20px_rgba(99,102,241,0.25)] transition hover:scale-[1.01]">
-                                            Pinjam
-                                        </a>
+                                        <?php if ($isAvailable): ?>
+                                            <a href="{{ $borrowRoute }}" class="mt-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_12px_20px_rgba(99,102,241,0.25)] transition hover:scale-[1.01]">
+                                                Pinjam
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="mt-4 inline-flex cursor-not-allowed items-center justify-center rounded-full bg-slate-700 px-4 py-2 text-sm font-semibold text-slate-300">
+                                                Tidak tersedia
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
-                                @empty
-                                    <div class="rounded-[1.5rem] border border-dashed border-slate-700 bg-slate-900/60 p-6 text-slate-300">Belum ada data barang yang tersedia.</div>
-                                @endforelse
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -469,7 +621,7 @@
     <footer class="border-t border-slate-200/80 bg-white/55 backdrop-blur-xl">
         <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
             <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-cyan-400 text-xl font-black text-white">S</div>
+                <img src="{{ asset('images/logo-sipinjam.jpg') }}" alt="" class="h-10 w-12 shrink-0 rounded-xl bg-white object-contain p-0.5 sm:w-24" />
                 <div>
                     <div class="text-sm font-black text-slate-900">Peminjaman Barang</div>
                     <div class="text-[10px] uppercase tracking-[0.24em] text-slate-500">Sekolah</div>
@@ -484,7 +636,7 @@
             </div>
 
             <div class="text-sm text-slate-600">
-                <p>� {{ date('Y') }} Peminjaman Barang Sekolah</p>
+                <p>&copy; {{ date('Y') }} Peminjaman Barang Sekolah</p>
                 <p class="mt-1">Kontak Sarpras: sarpras@sekolah.sch.id</p>
             </div>
         </div>
@@ -495,6 +647,64 @@
         const searchInput = document.getElementById('landing-search');
         const form = document.getElementById('landing-search-form');
         const resultsBox = document.getElementById('search-results');
+        const ambientOrbs = document.querySelectorAll('.ambient-orb');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const finePointer = window.matchMedia('(pointer: fine)');
+
+        if (!reducedMotion.matches && finePointer.matches && ambientOrbs.length) {
+            let pointerFrame = null;
+
+            window.addEventListener('pointermove', (event) => {
+                if (reducedMotion.matches) {
+                    return;
+                }
+
+                if (pointerFrame !== null) {
+                    return;
+                }
+
+                pointerFrame = window.requestAnimationFrame(() => {
+                    const offsetX = ((event.clientX / window.innerWidth) - 0.5) * 12;
+                    const offsetY = ((event.clientY / window.innerHeight) - 0.5) * 12;
+
+                    ambientOrbs.forEach((orb, index) => {
+                        const direction = index === 1 ? -1 : 1;
+                        orb.style.setProperty('--pointer-x', `${offsetX * direction}px`);
+                        orb.style.setProperty('--pointer-y', `${offsetY * direction}px`);
+                    });
+
+                    pointerFrame = null;
+                });
+            }, { passive: true });
+
+            window.addEventListener('pointerleave', () => {
+                if (pointerFrame !== null) {
+                    window.cancelAnimationFrame(pointerFrame);
+                    pointerFrame = null;
+                }
+
+                ambientOrbs.forEach((orb) => {
+                    orb.style.removeProperty('--pointer-x');
+                    orb.style.removeProperty('--pointer-y');
+                });
+            }, { passive: true });
+
+            reducedMotion.addEventListener('change', (event) => {
+                if (!event.matches) {
+                    return;
+                }
+
+                if (pointerFrame !== null) {
+                    window.cancelAnimationFrame(pointerFrame);
+                    pointerFrame = null;
+                }
+
+                ambientOrbs.forEach((orb) => {
+                    orb.style.removeProperty('--pointer-x');
+                    orb.style.removeProperty('--pointer-y');
+                });
+            });
+        }
 
         function renderItems(query = '') {
             const searchQuery = query.trim().toLowerCase();
@@ -511,18 +721,31 @@
                 return;
             }
 
-            resultsBox.innerHTML = filtered.slice(0, 4).map((item) => `
-                <a href="${item.route}" class="search-result flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-2 text-left text-white">
+            resultsBox.innerHTML = filtered.slice(0, 4).map((item) => {
+                const isAvailable = item.status === 'Tersedia';
+                const wrapper = isAvailable
+                    ? `<a href="${item.route}" class="search-result flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-2 text-left text-white">`
+                    : '<div class="search-result flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-2 text-left text-white" aria-disabled="true">';
+                const closingTag = isAvailable ? '</a>' : '</div>';
+
+                return `
+                ${wrapper}
                     <div class="flex items-center gap-3">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-lg">??</span>
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-indigo-200">
+                            <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                                <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                                <path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                            </svg>
+                        </span>
                         <div>
                             <div class="text-sm font-semibold">${item.nama}</div>
-                            <div class="text-xs text-slate-400">${item.kategori} � ${item.stok} unit</div>
+                            <div class="text-xs text-slate-300">${item.kategori} &middot; ${item.stok} unit</div>
                         </div>
                     </div>
-                    <span class="status-pill ${item.status === 'Tersedia' ? 'status-available' : 'status-borrowed'}">${item.status}</span>
-                </a>
-            `).join('');
+                    <span class="status-pill ${isAvailable ? 'status-available' : 'status-borrowed'}">${item.status}</span>
+                ${closingTag}
+            `;
+            }).join('');
 
             resultsBox.classList.remove('hidden');
         }

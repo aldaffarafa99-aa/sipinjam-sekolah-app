@@ -11,7 +11,7 @@
     <div class="student-hero-actions"><span class="student-online"><i></i> Akun aktif</span><a href="{{ route('peminjaman.create') }}" class="btn btn-student"><i class="bi bi-plus-circle me-2"></i>Ajukan peminjaman</a></div>
 </div>
 
-<div class="student-pulse mb-4"><i class="bi bi-calendar3"></i><span><strong>{{ now()->translatedFormat('l, d F Y') }}</strong><small>Kelola kebutuhan peminjamanmu hari ini</small></span><i class="bi bi-arrow-right-short"></i></div>
+<div class="student-pulse mb-4"><i class="bi bi-calendar3"></i><span><strong>{{ now()->locale('id')->translatedFormat('l, d F Y') }}</strong><small>Kelola kebutuhan peminjamanmu hari ini</small></span><i class="bi bi-arrow-right-short"></i></div>
 
 <div class="student-grid">
     <div class="student-card student-feature">
@@ -31,20 +31,8 @@
     @forelse ($peminjamanSaya as $peminjaman)
         <div class="student-loan">
             <span class="student-loan-icon"><i class="bi bi-box-seam"></i></span>
-            <div class="student-loan-main"><strong>{{ $peminjaman->barang->nama_barang }}</strong><small>{{ $peminjaman->jumlah }} unit · {{ $peminjaman->tanggal_pinjam->format('d M Y') }}</small></div>
-            @if ($peminjaman->status_tampil === 'terlambat')
-                <span class="student-status late">Terlambat</span>
-            @elseif ($peminjaman->status_tampil === 'selesai' || $peminjaman->status_tampil === 'dikembalikan')
-                <span class="student-status returned">Dikembalikan</span>
-            @elseif ($peminjaman->status_tampil === 'pending')
-                <span class="student-status borrowed">Menunggu persetujuan</span>
-            @elseif ($peminjaman->status_tampil === 'disetujui')
-                <span class="student-status returned">Disetujui</span>
-            @elseif ($peminjaman->status_tampil === 'ditolak')
-                <span class="student-status late">Ditolak</span>
-            @else
-                <span class="student-status borrowed">Dipinjam</span>
-            @endif
+            <div class="student-loan-main"><strong>{{ $peminjaman->barang->nama_barang }}</strong><small>{{ $peminjaman->jumlah }} unit · {{ $peminjaman->tanggal_pinjam->locale('id')->translatedFormat('d M Y') }}</small></div>
+            <x-status-badge :status="$peminjaman->status_tampil" />
         </div>
     @empty
         <div class="student-empty"><i class="bi bi-inbox"></i><strong>Belum ada peminjaman</strong><span>Pengajuan pertamamu akan muncul di sini.</span></div>

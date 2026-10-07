@@ -1,3 +1,495 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --school-ink: #0f172a;
+    --school-muted: #475569;
+    --school-line: rgba(148, 163, 184, 0.24);
+    --school-brand: #4f46e5;
+    --school-brand-dark: #3730a3;
+    --school-violet: #7c3aed;
+    --school-cyan: #0891b2;
+    --school-surface: rgba(255, 255, 255, 0.88);
+    --school-shadow: 0 18px 44px rgba(30, 41, 59, 0.08);
+    --school-radius: 1.25rem;
+}
+
+body.auth-shell,
+body.app-shell {
+    color: var(--school-ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body.auth-shell {
+    background:
+        radial-gradient(ellipse at 12% 12%, rgba(99, 102, 241, 0.12), transparent 34rem),
+        radial-gradient(ellipse at 90% 82%, rgba(14, 165, 233, 0.08), transparent 30rem),
+        #f8fafc;
+}
+
+.auth-guest-shell::before,
+.auth-guest-shell::after {
+    border-radius: 50%;
+    content: "";
+    pointer-events: none;
+    position: absolute;
+}
+
+.auth-guest-shell::before {
+    background: rgba(99, 102, 241, 0.09);
+    filter: blur(60px);
+    height: 18rem;
+    right: -4rem;
+    top: 8%;
+    width: 18rem;
+}
+
+.auth-guest-shell::after {
+    background: rgba(34, 211, 238, 0.08);
+    bottom: 4%;
+    filter: blur(60px);
+    height: 16rem;
+    left: -4rem;
+    width: 16rem;
+}
+
+.auth-shell input,
+.auth-shell button,
+.auth-shell a {
+    transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.auth-shell input:focus-visible,
+.auth-shell button:focus-visible,
+.auth-shell a:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.38);
+    outline-offset: 2px;
+}
+
+.app-shell {
+    --ink: var(--school-ink);
+    --muted: var(--school-muted);
+    --line: var(--school-line);
+    --brand: var(--school-brand);
+    --brand-dark: var(--school-brand-dark);
+    background:
+        radial-gradient(ellipse at 82% 7%, rgba(139, 92, 246, 0.13), transparent 30rem),
+        radial-gradient(ellipse at 12% 65%, rgba(34, 211, 238, 0.08), transparent 28rem),
+        linear-gradient(135deg, #f8fafc, #eef2ff 55%, #f1f5f9);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.app-container {
+    margin: 0 auto;
+    max-width: 1440px;
+}
+
+.app-background-shape {
+    border: 1px solid rgba(81, 70, 229, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+    position: fixed;
+    z-index: 0;
+}
+
+.app-background-shape.shape-one {
+    height: 420px;
+    right: -235px;
+    top: 180px;
+    width: 420px;
+}
+
+.app-background-shape.shape-two {
+    bottom: -285px;
+    height: 520px;
+    left: -300px;
+    width: 520px;
+}
+
+.app-shell .app-navbar {
+    background: rgba(255, 255, 255, 0.82);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 10;
+}
+
+.app-shell .app-navbar .navbar-collapse {
+    visibility: visible;
+}
+
+.app-shell .app-navbar .navbar-brand {
+    align-items: center;
+    display: flex;
+    gap: 0.7rem;
+    letter-spacing: -0.02em;
+}
+
+.app-shell .app-navbar .navbar-brand {
+    color: var(--school-ink);
+}
+
+.app-shell .app-navbar .navbar-brand small,
+.app-shell .app-navbar .user-role {
+    color: #475569;
+}
+
+.app-shell .app-navbar .navbar-brand small {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.app-shell .brand-mark {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.1);
+    border-radius: 10px;
+    display: grid;
+    height: 42px;
+    overflow: hidden;
+    place-items: center;
+    width: 76px;
+}
+
+.app-shell .brand-mark img {
+    display: block;
+    height: 100%;
+    object-fit: contain;
+    width: 100%;
+}
+
+.app-shell .app-navbar .nav-link {
+    color: #334155;
+    font-weight: 600;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.app-shell .app-navbar .nav-link:hover,
+.app-shell .app-navbar .nav-link.active {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--school-brand-dark);
+}
+
+.app-shell .app-navbar .admin-nav-label {
+    color: #6d28d9;
+}
+
+.app-shell .profile-nav-link {
+    color: #1e293b;
+}
+
+.app-shell .profile-nav-link:hover {
+    color: var(--school-brand-dark);
+    opacity: 1;
+}
+
+.app-shell .profile-nav-chevron {
+    color: #64748b;
+    font-size: 0.65rem;
+    margin-left: 0.15rem;
+}
+
+.app-shell .profile-nav-link {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.app-shell .user-avatar {
+    align-items: center;
+    background: #a9a5ff;
+    border-radius: 50%;
+    color: #211d69;
+    display: inline-grid;
+    font-weight: 700;
+    height: 30px;
+    justify-content: center;
+    margin-right: 0.1rem;
+    place-items: center;
+    width: 30px;
+}
+
+.app-shell .user-avatar-image {
+    object-fit: cover;
+}
+
+.app-shell .btn-logout {
+    border: 1px solid rgba(79, 70, 229, 0.26);
+    border-radius: 0.6rem;
+    color: var(--school-brand-dark);
+}
+
+.app-shell .app-main {
+    animation: app-page-arrive 450ms ease both;
+    min-height: calc(100vh - 72px);
+    position: relative;
+    z-index: 1;
+}
+
+.app-shell .app-main .alert {
+    border: 0;
+    border-radius: 0.875rem;
+    box-shadow: 0 8px 20px rgba(31, 41, 65, 0.06);
+}
+
+.app-shell .app-main .stat-card,
+.app-shell .app-main .data-card,
+.app-shell .app-main .form-card {
+    transition: box-shadow 250ms ease, transform 250ms ease, border-color 250ms ease;
+}
+
+.app-shell .app-main .stat-card:hover,
+.app-shell .app-main .data-card:hover,
+.app-shell .app-main .form-card:hover {
+    border-color: #d8d5ff;
+    box-shadow: 0 16px 32px rgba(48, 40, 156, 0.1);
+    transform: translateY(-3px);
+}
+
+@keyframes app-page-arrive {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.app-shell .btn-logout {
+    border-color: rgba(79, 70, 229, 0.26);
+    color: var(--school-brand-dark);
+}
+
+.app-shell .btn-logout:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--school-brand-dark);
+}
+
+.app-shell .navbar-toggler {
+    border-color: rgba(79, 70, 229, 0.24);
+}
+
+.app-shell .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.2);
+}
+
+.app-shell .app-main {
+    min-height: calc(100vh - 72px);
+}
+
+.app-shell .page-hero {
+    align-items: center;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.92), rgba(238, 242, 255, 0.8));
+    border: 1px solid var(--school-line);
+    border-radius: 1.5rem;
+    box-shadow: var(--school-shadow);
+    gap: 1rem;
+    padding: 1.4rem 1.6rem;
+}
+
+.app-shell .page-hero h1,
+.app-shell .page-hero h2,
+.app-shell .page-hero h3,
+.app-shell .page-hero h4 {
+    color: var(--school-ink);
+    font-weight: 750;
+    letter-spacing: -0.035em;
+}
+
+.app-shell .page-hero p,
+.app-shell .page-kicker {
+    color: #475569;
+}
+
+.app-shell .filter-panel,
+.app-shell .data-card,
+.app-shell .form-card,
+.app-shell .dashboard-panel,
+.app-shell .student-card,
+.app-shell .stat-card,
+.app-shell .card {
+    border: 1px solid var(--school-line);
+    border-radius: var(--school-radius);
+    box-shadow: var(--school-shadow);
+}
+
+.app-shell .filter-panel,
+.app-shell .data-card,
+.app-shell .form-card,
+.app-shell .dashboard-panel,
+.app-shell .student-card,
+.app-shell .card {
+    background-color: var(--school-surface);
+}
+
+.app-shell .form-control,
+.app-shell .form-select {
+    border-color: rgba(148, 163, 184, 0.42);
+    border-radius: 0.75rem;
+    color: #1e293b;
+    min-height: 2.65rem;
+}
+
+.app-shell .form-control:focus,
+.app-shell .form-select:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 0.22rem rgba(99, 102, 241, 0.13);
+}
+
+.app-shell .btn {
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 650;
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.app-shell .btn:active {
+    transform: translateY(1px);
+}
+
+.app-shell .btn:disabled,
+.app-shell .btn.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.app-shell .btn-primary {
+    background: linear-gradient(120deg, #4f46e5, #7c3aed);
+    border-color: transparent;
+    box-shadow: 0 9px 20px rgba(79, 70, 229, 0.2);
+    color: #fff;
+}
+
+.app-shell .btn-primary:hover,
+.app-shell .btn-primary:focus {
+    background: linear-gradient(120deg, #4338ca, #6d28d9);
+    border-color: transparent;
+    box-shadow: 0 12px 24px rgba(79, 70, 229, 0.26);
+    color: #fff;
+}
+
+.app-shell .btn-dark {
+    background: #1e293b;
+    border-color: #1e293b;
+}
+
+.app-shell .btn-light {
+    background: #f8fafc;
+    border-color: rgba(148, 163, 184, 0.3);
+    color: #334155;
+}
+
+.app-shell .btn-light:hover {
+    background: #eef2ff;
+    border-color: rgba(99, 102, 241, 0.24);
+    color: var(--school-brand-dark);
+}
+
+.app-shell .table {
+    --bs-table-color: #334155;
+    --bs-table-border-color: rgba(148, 163, 184, 0.18);
+}
+
+.app-shell .table > :not(caption) > * > * {
+    padding: 0.8rem 1rem;
+}
+
+.system-status {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.25;
+    padding: 0.35rem 0.65rem;
+    white-space: nowrap;
+}
+
+.system-status--pending,
+.system-status--dipinjam {
+    background: #fff7e6;
+    border-color: #fde6b2;
+    color: #925b05;
+}
+
+.system-status--disetujui,
+.system-status--selesai {
+    background: #eaf8f0;
+    border-color: #c8ecd7;
+    color: #17663e;
+}
+
+.system-status--ditolak,
+.system-status--terlambat {
+    background: #fff0f1;
+    border-color: #f8cdd1;
+    color: #a52834;
+}
+
+.system-status--unknown {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+@media (max-width: 991.98px) {
+    .app-shell .app-navbar .navbar-collapse {
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 0 0 1rem 1rem;
+        padding: 0.75rem 0;
+    }
+
+    .app-shell .app-navbar .navbar-nav {
+        padding: 0.35rem 0;
+    }
+
+    .app-shell .app-navbar .nav-link {
+        margin-top: 0.2rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .app-shell .app-main {
+        padding-bottom: 2rem !important;
+        padding-top: 1.25rem !important;
+    }
+
+    .app-shell .page-hero {
+        align-items: flex-start;
+        padding: 1.1rem;
+    }
+
+    .app-shell .table-responsive {
+        border-radius: inherit;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-shell *,
+    .app-shell * {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .app-shell .app-main,
+    .app-shell .app-main .stat-card,
+    .app-shell .app-main .data-card,
+    .app-shell .app-main .form-card {
+        animation: none !important;
+        transition: none !important;
+    }
+}

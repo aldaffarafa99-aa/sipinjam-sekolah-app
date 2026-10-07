@@ -3,14 +3,7 @@
 
 @section('content')
 @php
-    $dashboardTrends = [
-        ['change' => '+12%', 'tone' => 'up', 'label' => 'dari minggu lalu', 'bars' => [35, 48, 42, 62, 54, 78, 70, 91]],
-        ['change' => '+8%', 'tone' => 'up', 'label' => 'dari minggu lalu', 'bars' => [42, 35, 58, 48, 66, 59, 76, 84]],
-        ['change' => '+16%', 'tone' => 'up', 'label' => 'dari minggu lalu', 'bars' => [28, 48, 38, 70, 58, 74, 68, 88]],
-        ['change' => '-4%', 'tone' => 'down', 'label' => 'dari minggu lalu', 'bars' => [76, 68, 72, 58, 64, 48, 42, 36]],
-    ];
-    $weeklyLoans = [4, 7, 5, 9, 8, 12, 10];
-    $weeklyLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    $weeklyScale = max(4, (int) ceil(max($weeklyLoans) / 4) * 4);
 @endphp
 <div class="dashboard-head d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4 mb-lg-5">
     <div>
@@ -28,17 +21,16 @@
 
 <div class="dashboard-pulse mb-4">
     <span class="pulse-mark"><i class="bi bi-broadcast-pin"></i></span>
-    <span><strong>Ringkasan hari ini</strong><small>{{ now()->translatedFormat('l, d F Y') }} · Sistem inventaris aktif</small></span>
+    <span><strong>Ringkasan hari ini</strong><small>{{ now()->locale('id')->translatedFormat('l, d F Y') }} · Sistem inventaris aktif</small></span>
     <span class="pulse-status"><i></i> Semua layanan normal</span>
 </div>
 
 <div class="row g-3 mb-4">
-    @foreach ([['class' => 'stat-indigo', 'icon' => 'bi-box-seam', 'label' => 'Jenis barang', 'value' => $totalBarang], ['class' => 'stat-blue', 'icon' => 'bi-stack', 'label' => 'Total unit', 'value' => $totalStok], ['class' => 'stat-orange', 'icon' => 'bi-arrow-left-right', 'label' => 'Sedang dipinjam', 'value' => $sedangDipinjam], ['class' => 'stat-red', 'icon' => 'bi-alarm', 'label' => 'Terlambat', 'value' => $terlambat]] as $index => $stat)
+    @foreach ([['class' => 'stat-indigo', 'icon' => 'bi-box-seam', 'label' => 'Jenis barang', 'value' => $totalBarang], ['class' => 'stat-blue', 'icon' => 'bi-stack', 'label' => 'Total unit', 'value' => $totalStok], ['class' => 'stat-orange', 'icon' => 'bi-arrow-left-right', 'label' => 'Sedang dipinjam', 'value' => $sedangDipinjam], ['class' => 'stat-red', 'icon' => 'bi-alarm', 'label' => 'Terlambat', 'value' => $terlambat]] as $stat)
         <div class="col-md-3">
             <div class="stat-card {{ $stat['class'] }}">
                 <div class="stat-icon"><i class="bi {{ $stat['icon'] }}"></i></div>
-                <div class="stat-content"><div class="stat-label">{{ $stat['label'] }}</div><div class="stat-value">{{ $stat['value'] }}</div><span class="stat-change {{ $dashboardTrends[$index]['tone'] === 'down' ? 'negative' : '' }}"><i class="bi bi-{{ $dashboardTrends[$index]['tone'] === 'down' ? 'arrow-down-right' : 'arrow-up-right' }}"></i>{{ $dashboardTrends[$index]['change'] }} <small>{{ $dashboardTrends[$index]['label'] }}</small></span></div>
-                <div class="mini-sparkline">@foreach($dashboardTrends[$index]['bars'] as $bar)<i style="height: {{ $bar }}%"></i>@endforeach</div>
+                <div class="stat-content"><div class="stat-label">{{ $stat['label'] }}</div><div class="stat-value">{{ $stat['value'] }}</div><small class="stat-caption">Data terkini</small></div>
             </div>
         </div>
     @endforeach
@@ -47,14 +39,25 @@
 <div class="row g-4 mb-4">
     <div class="col-lg-8">
         <div class="dashboard-panel trend-panel h-100">
-            <div class="panel-heading"><div><h5 class="mb-1">Tren peminjaman</h5><p class="mb-0">Aktivitas 7 hari terakhir <span class="trend-live"><i></i> Live view</span></p></div><span class="trend-total"><strong>{{ array_sum($weeklyLoans) }}</strong><small>total aktivitas</small></span></div>
-            <div class="trend-chart"><div class="chart-y-axis"><span>12</span><span>8</span><span>4</span><span>0</span></div><div class="chart-area">@foreach($weeklyLoans as $index => $loan)<div class="chart-column"><div class="chart-tooltip">{{ $loan }} peminjaman</div><span class="chart-bar" style="height: {{ ($loan / 12) * 100 }}%"></span><small>{{ $weeklyLabels[$index] }}</small></div>@endforeach</div></div>
+            <div class="panel-heading"><div><h5 class="mb-1">Tren peminjaman</h5><p class="mb-0">Transaksi berdasarkan tanggal pinjam · 7 hari terakhir</p></div><span class="trend-total"><strong>{{ $weeklyTotal }}</strong><small>total transaksi</small></span></div>
+            <div class="trend-chart" role="img" aria-label="Jumlah peminjaman per hari selama tujuh hari terakhir">
+                <div class="chart-y-axis"><span>{{ $weeklyScale }}</span><span>{{ (int) round($weeklyScale * 0.67) }}</span><span>{{ (int) round($weeklyScale * 0.33) }}</span><span>0</span></div>
+                <div class="chart-area">
+                    @foreach($weeklyLoans as $index => $loan)
+                        <div class="chart-column">
+                            <div class="chart-tooltip">{{ $loan }} peminjaman</div>
+                            <span class="chart-bar" style="height: {{ $loan > 0 ? max(5, ($loan / $weeklyScale) * 100) : 0 }}%"></span>
+                            <small>{{ $weeklyLabels[$index] }}</small>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-lg-4">
         <div class="dashboard-panel today-summary h-100">
             <div class="panel-heading"><div><h5 class="mb-1">Ringkasan hari ini</h5><p class="mb-0">Pantauan cepat sistem</p></div><span class="today-icon"><i class="bi bi-sun"></i></span></div>
-            <div class="today-body"><div class="today-date">{{ now()->translatedFormat('l, d F Y') }}</div><div class="today-metric"><span class="today-metric-icon purple"><i class="bi bi-activity"></i></span><span><strong>{{ $peminjamanTerbaru->count() }}</strong><small>aktivitas terbaru terpantau</small></span></div><div class="today-metric"><span class="today-metric-icon {{ $terlambat ? 'red' : 'green' }}"><i class="bi bi-{{ $terlambat ? 'exclamation-triangle' : 'check2-circle' }}"></i></span><span><strong>{{ $terlambat ? $terlambat : 'Aman' }}</strong><small>{{ $terlambat ? 'peminjaman perlu ditindaklanjuti' : 'tidak ada keterlambatan aktif' }}</small></span></div></div>
+            <div class="today-body"><div class="today-date">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</div><div class="today-metric"><span class="today-metric-icon purple"><i class="bi bi-activity"></i></span><span><strong>{{ $todayLoans }}</strong><small>peminjaman tercatat hari ini</small></span></div><div class="today-metric"><span class="today-metric-icon {{ $terlambat ? 'red' : 'green' }}"><i class="bi bi-{{ $terlambat ? 'exclamation-triangle' : 'check2-circle' }}"></i></span><span><strong>{{ $terlambat ? $terlambat : 'Aman' }}</strong><small>{{ $terlambat ? 'peminjaman perlu ditindaklanjuti' : 'tidak ada keterlambatan aktif' }}</small></span></div></div>
         </div>
     </div>
 </div>
@@ -75,22 +78,8 @@
                 @forelse ($peminjamanTerbaru as $p)
                 <tr>
                     <td><div class="dashboard-borrower"><span>{{ strtoupper(substr($p->nama_peminjam, 0, 1)) }}</span><strong>{{ $p->nama_peminjam }}</strong><small>{{ $p->kelas_jabatan ?? 'Peminjam' }}</small></div></td>
-                    <td><div class="dashboard-item"><span class="dashboard-item-icon"><i class="bi bi-{{ str_contains(strtolower($p->barang->nama_barang), 'proyektor') ? 'display' : (str_contains(strtolower($p->barang->nama_barang), 'laptop') ? 'laptop' : 'box-seam') }}"></i></span><span>{{ $p->barang->nama_barang }}</span></div></td><td>{{ $p->jumlah }} unit</td><td>{{ $p->tanggal_pinjam->format('d M Y') }}</td>
-                    <td>
-                        @if(in_array($p->status_tampil, ['selesai', 'dikembalikan']))
-                            <span class="status-pill status-success">Selesai</span>
-                        @elseif($p->status_tampil === 'terlambat')
-                            <span class="status-pill status-danger">Terlambat</span>
-                        @elseif($p->status_tampil === 'pending')
-                            <span class="status-pill status-warning">Menunggu</span>
-                        @elseif($p->status_tampil === 'disetujui')
-                            <span class="status-pill status-success">Disetujui</span>
-                        @elseif($p->status_tampil === 'ditolak')
-                            <span class="status-pill status-danger">Ditolak</span>
-                        @else
-                            <span class="status-pill status-warning">Dipinjam</span>
-                        @endif
-                    </td>
+                    <td><div class="dashboard-item"><span class="dashboard-item-icon"><i class="bi bi-{{ str_contains(strtolower($p->barang->nama_barang), 'proyektor') ? 'display' : (str_contains(strtolower($p->barang->nama_barang), 'laptop') ? 'laptop' : 'box-seam') }}"></i></span><span>{{ $p->barang->nama_barang }}</span></div></td><td>{{ $p->jumlah }} unit</td><td>{{ $p->tanggal_pinjam->locale('id')->translatedFormat('d M Y') }}</td>
+                    <td><x-status-badge :status="$p->status_tampil" /></td>
                 </tr>
                 @empty
                 <tr><td colspan="5" class="empty-state"><i class="bi bi-inbox"></i><span>Belum ada data peminjaman.</span></td></tr>
@@ -105,7 +94,7 @@
             <div class="admin-card mb-4">
                 <div class="admin-card-top"><span class="admin-badge"><i class="bi bi-stars"></i></span><span>AKSES ADMIN</span></div>
                 <h5>Kontrol cepat</h5><p>Semua pintasan kerja dalam satu tempat.</p>
-                <div class="admin-shortcuts"><a href="{{ route('barang.create') }}" class="admin-shortcut"><i class="bi bi-plus-lg"></i><span>Tambah barang</span></a><a href="{{ route('barang.index') }}" class="admin-shortcut"><i class="bi bi-boxes"></i><span>Kelola barang</span></a><a href="{{ route('peminjaman.index') }}" class="admin-shortcut"><i class="bi bi-clipboard2-data"></i><span>Pantau pinjam</span></a><a href="{{ route('laporan.index') }}" class="admin-shortcut"><i class="bi bi-download"></i><span>Export laporan</span></a></div>
+                <div class="admin-shortcuts"><a href="{{ route('barang.create') }}" class="admin-shortcut"><i class="bi bi-plus-lg"></i><span>Tambah barang</span></a><a href="{{ route('barang.index') }}" class="admin-shortcut"><i class="bi bi-boxes"></i><span>Kelola barang</span></a><a href="{{ route('peminjaman.index') }}" class="admin-shortcut"><i class="bi bi-clipboard2-data"></i><span>Pantau pinjam</span></a><a href="{{ route('laporan.export') }}" class="admin-shortcut"><i class="bi bi-download"></i><span>Unduh laporan</span></a></div>
             </div>
         @endif
         <div class="dashboard-panel quick-panel mb-4">
@@ -137,8 +126,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="exportSoonModal" tabindex="-1" aria-labelledby="exportSoonModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content border-0 shadow"><div class="modal-body export-modal-body"><span class="export-modal-icon"><i class="bi bi-download"></i></span><h5 id="exportSoonModalLabel">Export laporan</h5><p>Fitur export sedang disiapkan. Untuk sementara, laporan dapat dipantau dari halaman Peminjaman.</p><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Mengerti</button></div></div></div></div>
-
 <style>
     .dashboard-title { color: #18213a; font-size: clamp(1.7rem, 3vw, 2.45rem); font-weight: 750; letter-spacing: -.045em; }
     .stat-content { position: relative; z-index: 1; } .stat-change { align-items: center; color: #3c9b70; display: flex; font-size: .67rem; font-weight: 800; gap: .18rem; margin-top: .45rem; } .stat-change small { color: #9aa5b7; font-size: .6rem; font-weight: 500; } .stat-change.negative { color: #d45561; } .mini-sparkline { align-items: end; bottom: 12px; display: flex; gap: 3px; height: 27px; opacity: .8; position: absolute; right: 12px; width: 58px; } .mini-sparkline i { background: currentColor; border-radius: 3px 3px 1px 1px; display: block; flex: 1; min-height: 4px; opacity: .35; } .stat-indigo .mini-sparkline { color: #5146e5; } .stat-blue .mini-sparkline { color: #2775d3; } .stat-orange .mini-sparkline { color: #df881d; } .stat-red .mini-sparkline { color: #de4b59; }
@@ -158,6 +145,7 @@
     .stat-orange .stat-icon { background: #fff3df; color: #df881d; } .stat-orange::after { background: #fff8ec; }
     .stat-red .stat-icon { background: #ffebee; color: #de4b59; } .stat-red::after { background: #fff2f3; }
     .stat-label { color: var(--muted); font-size: .78rem; } .stat-value { color: #1c2640; font-size: 1.7rem; font-weight: 750; line-height: 1.15; margin-top: .2rem; }
+    .stat-caption { color: #64748b; display: block; font-size: .66rem; margin-top: .35rem; }
     .stat-note { bottom: 13px; color: #94a0b5; font-size: .68rem; position: absolute; right: 14px; z-index: 1; } .stat-note i { color: #4bae83; }
     .dashboard-panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 8px 24px rgba(31,41,65,.04); overflow: hidden; }
     .panel-heading { align-items: center; display: flex; justify-content: space-between; padding: 1.35rem 1.4rem; } .panel-heading h5 { font-weight: 700; } .panel-heading p { font-size: .78rem; }

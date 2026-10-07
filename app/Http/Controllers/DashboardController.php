@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Peminjaman;
+use App\Support\InventoryMetrics;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(InventoryMetrics $inventoryMetrics)
     {
         if (auth()->user()->role !== 'admin') {
             $peminjamanSaya = Peminjaman::with('barang')
@@ -22,7 +23,7 @@ class DashboardController extends Controller
         $totalBarang = Barang::count();
         $totalStok = Barang::sum('stok_total');
         $sedangDipinjam = Peminjaman::whereIn('status', ['dipinjam', 'terlambat'])->count();
-        $terlambat = Peminjaman::where('status', 'terlambat')
+        $terlambat = Peminjaman::whereIn('status', ['dipinjam', 'terlambat'])
             ->whereDate('tanggal_kembali_rencana', '<', today())
             ->count();
         $stokMenipis = Barang::where('stok_tersedia', '<=', 2)
@@ -32,9 +33,17 @@ class DashboardController extends Controller
             ->get();
 
         $peminjamanTerbaru = Peminjaman::with('barang')->latest()->take(5)->get();
+        $weeklyActivity = $inventoryMetrics->weeklyLoanActivity();
+        $todayLoans = Peminjaman::whereDate('tanggal_pinjam', today())->count();
 
         return view('dashboard', compact(
-            'totalBarang', 'totalStok', 'sedangDipinjam', 'terlambat', 'peminjamanTerbaru', 'stokMenipis'
-        ));
+            'totalBarang',
+            'totalStok',
+            'sedangDipinjam',
+            'terlambat',
+            'peminjamanTerbaru',
+            'stokMenipis',
+            'todayLoans'
+        ) + $weeklyActivity);
     }
 }

@@ -5,14 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Masuk | {{ config('app.name', 'Peminjaman Barang') }}</title>
+        <title>Masuk | Peminjaman Barang Sekolah</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
             [x-cloak] { display: none !important; }
         </style>
     </head>
-    <body class="min-h-screen bg-slate-100 font-sans text-slate-900 antialiased">
+    <body class="auth-shell min-h-screen bg-slate-100 font-sans text-slate-900 antialiased">
         <div class="min-h-screen lg:grid lg:grid-cols-2">
             <aside class="relative hidden min-h-screen overflow-hidden bg-gradient-to-br from-indigo-950 via-indigo-800 to-violet-700 px-12 py-12 text-white lg:flex lg:flex-col lg:justify-between xl:px-20">
                 <div class="absolute -right-32 -top-32 h-96 w-96 rounded-full border border-white/10 bg-white/5"></div>
@@ -21,10 +21,10 @@
 
                 <div class="relative z-10">
                     <a href="/" class="inline-flex items-center gap-3" aria-label="Beranda Peminjaman Barang">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 shadow-lg ring-1 ring-white/20">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo sekolah" class="h-8 w-8 rounded-xl object-cover">
+                        <span class="flex h-11 w-20 items-center justify-center overflow-hidden rounded-xl bg-white p-1 shadow-lg ring-1 ring-white/20">
+                            <img src="{{ asset('images/logo-sipinjam.jpg') }}" alt="Logo SIPINJAM" class="h-full w-full object-contain">
                         </span>
-                        <span class="text-lg font-semibold tracking-tight">Peminjaman Barang</span>
+                        <span class="text-lg font-semibold tracking-tight">Peminjaman Barang<small class="mt-1 block text-xs font-medium text-indigo-200">Sekolah · SIPINJAM</small></span>
                     </a>
                 </div>
 
@@ -69,10 +69,10 @@
             <main class="flex min-h-screen items-center justify-center px-5 py-8 sm:px-8 lg:px-12 xl:px-20" x-data="{ showPassword: false, isSubmitting: false }">
                 <div class="w-full max-w-md">
                     <div class="mb-8 flex items-center gap-3 lg:hidden">
-                        <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo sekolah" class="h-8 w-8 rounded-xl object-cover">
+                        <span class="flex h-11 w-20 items-center justify-center overflow-hidden rounded-xl bg-white p-1 shadow-lg shadow-indigo-200">
+                            <img src="{{ asset('images/logo-sipinjam.jpg') }}" alt="Logo SIPINJAM" class="h-full w-full rounded-xl object-contain">
                         </span>
-                        <span class="text-lg font-semibold tracking-tight text-slate-800">Peminjaman Barang</span>
+                        <span class="text-lg font-semibold tracking-tight text-slate-800">Peminjaman Barang<small class="mt-1 block text-xs font-medium text-slate-500">Sekolah · SIPINJAM</small></span>
                     </div>
 
                     <div class="rounded-3xl bg-white p-7 shadow-xl shadow-slate-200/70 ring-1 ring-slate-200/80 sm:p-10">

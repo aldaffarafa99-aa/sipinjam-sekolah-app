@@ -482,7 +482,7 @@
                                     <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Katalog barang populer</p>
                                     <h3 class="mt-2 text-2xl font-bold text-white">Barang paling sering dipinjam</h3>
                                 </div>
-                                <a href="#" class="text-sm font-medium text-indigo-200 hover:text-white">Lihat semua barang →</a>
+                                <a href="{{ route('barang.index') }}" class="text-sm font-medium text-indigo-200 hover:text-white">Lihat semua barang →</a>
                             </div>
 
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">

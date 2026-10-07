@@ -8,7 +8,11 @@
     </style>
 </head>
 <body>
-    <div class="actions"><button onclick="window.print()">Cetak bukti</button></div>
+    <div class="actions">
+        <a href="{{ route('peminjaman.index') }}" class="secondary-action">Kembali ke daftar</a>
+        <button type="button" onclick="window.print()">Cetak bukti</button>
+        <button type="button" onclick="if (window.history.length > 1) { window.history.back(); } else { window.close(); }">Tutup</button>
+    </div>
     <main class="receipt">
         <header class="receipt-head"><h1>Bukti Peminjaman Barang</h1><p>Inventaris Sekolah · No. transaksi #{{ str_pad((string) $peminjaman->id, 6, '0', STR_PAD_LEFT) }}</p></header>
         <section class="receipt-grid">
@@ -18,7 +22,7 @@
             <div class="field"><small>Jumlah</small><strong>{{ $peminjaman->jumlah }} unit</strong></div>
             <div class="field"><small>Tanggal pinjam</small><strong>{{ $peminjaman->tanggal_pinjam->format('d F Y') }}</strong></div>
             <div class="field"><small>Jatuh tempo</small><strong>{{ $peminjaman->tanggal_kembali_rencana->format('d F Y') }}</strong></div>
-            <div class="field"><small>Status</small><strong>{{ ucfirst($peminjaman->status_tampil) }}</strong></div>
+            <div class="field"><small>Status</small><strong>{{ ['pending' => 'Menunggu', 'disetujui' => 'Disetujui', 'ditolak' => 'Ditolak', 'dipinjam' => 'Dipinjam', 'terlambat' => 'Terlambat', 'selesai' => 'Selesai'][$peminjaman->status_tampil] ?? 'Menunggu' }}</strong></div>
             <div class="field"><small>Tujuan penggunaan</small><strong>{{ $peminjaman->tujuan_penggunaan ?? '-' }}</strong></div>
         </section>
         <section class="qr"><img src="{{ $qrCode }}" alt="QR verifikasi bukti peminjaman"><div><strong>Verifikasi transaksi</strong><p>Pindai QR untuk memeriksa status transaksi. Tautan QR berlaku 30 hari.</p></div></section>

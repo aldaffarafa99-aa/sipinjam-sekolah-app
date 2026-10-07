@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\Peminjaman;
+use App\Support\InventoryMetrics;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, InventoryMetrics $inventoryMetrics)
     {
         $totalBarang = Barang::count();
         $barangTersedia = Barang::where('status_barang', 'tersedia')->sum('stok_tersedia');
@@ -64,6 +65,6 @@ class LandingController extends Controller
             'searchTerm',
             'searchResults',
             'featuredItems'
-        ));
+        ) + $inventoryMetrics->weeklyLoanActivity());
     }
 }

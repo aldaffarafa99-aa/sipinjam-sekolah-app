@@ -182,7 +182,9 @@ class PeminjamanWorkflowTest extends TestCase
         $this->actingAs($user)
             ->get('/peminjaman/' . $peminjaman->id . '/bukti')
             ->assertOk()
-            ->assertSee('data:image/svg+xml;base64,', false);
+            ->assertSee('data:image/svg+xml;base64,', false)
+            ->assertSee('Tutup')
+            ->assertSee('Kembali ke daftar');
 
         $verificationUrl = URL::temporarySignedRoute('peminjaman.verifikasi', now()->addMinutes(5), [
             'peminjaman' => $peminjaman->id,
