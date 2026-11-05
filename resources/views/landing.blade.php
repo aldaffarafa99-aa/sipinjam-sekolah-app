@@ -4,75 +4,266 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistem peminjaman barang sekolah yang cepat, transparan, modern, dan mudah digunakan.">
-    <title>Peminjaman Barang Sekolah</title>
+    <title>Peminjaman Barang | Inventaris Sekolah</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        /* ===== FOUNDATION ===== */
+        *, *::before, *::after { box-sizing: border-box; }
+
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
             background:
-                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.16), transparent 22%),
-                radial-gradient(circle at 80% 0%, rgba(168, 85, 247, 0.16), transparent 22%),
-                linear-gradient(135deg, #f8fafc 0%, #eef2ff 38%, #f1f5f9 100%);
+                radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.13), transparent 28%),
+                radial-gradient(circle at 85% 5%,  rgba(168, 85, 247, 0.13), transparent 28%),
+                radial-gradient(circle at 50% 90%, rgba(14, 165, 233, 0.10), transparent 30%),
+                linear-gradient(160deg, #f0f4ff 0%, #eef2ff 35%, #f8faff 70%, #f0f9ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: none;
+        }
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1);
+        }
+        .reveal-left.revealed { opacity: 1; transform: none; }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1);
+        }
+        .reveal-right.revealed { opacity: 1; transform: none; }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== GLASS VARIANTS ===== */
         .glass {
             background: rgba(15, 23, 42, 0.34);
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+            transition: box-shadow 0.3s ease;
+        }
+        .glass:hover {
+            box-shadow: 0 32px 64px rgba(79, 70, 229, 0.22);
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 18px 40px rgba(99, 102, 241, 0.08);
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 18px 40px rgba(99, 102, 241, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.015);
+            box-shadow: 0 32px 64px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+            border-color: rgba(99, 102, 241, 0.28);
         }
 
         .nav-glass {
-            background: rgba(255, 255, 255, 0.76);
+            background: rgba(255, 255, 255, 0.82);
             border: 1px solid rgba(148, 163, 184, 0.28);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav-glass.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255,255,255,1);
+        }
+
+        .landing-profile {
+            position: relative;
+        }
+        .landing-profile summary {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            border-radius: 9999px;
+            cursor: pointer;
+            display: flex;
+            gap: 0.6rem;
+            list-style: none;
+            max-width: 15rem;
+            padding: 0.35rem 0.7rem 0.35rem 0.4rem;
+        }
+        .landing-profile summary::-webkit-details-marker { display: none; }
+        .landing-profile-avatar {
+            align-items: center;
+            background: #e0e7ff;
+            border-radius: 50%;
+            color: #3730a3;
+            display: inline-flex;
+            flex: 0 0 2.25rem;
+            font-size: 0.9rem;
+            font-weight: 800;
+            height: 2.25rem;
+            justify-content: center;
+            object-fit: cover;
+            width: 2.25rem;
+        }
+        .landing-profile-copy {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+            min-width: 0;
+            text-align: left;
+        }
+        .landing-profile-name {
+            color: #1e293b;
+            font-size: 0.78rem;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .landing-profile-role {
+            color: #64748b;
+            font-size: 0.66rem;
+            margin-top: 0.15rem;
+        }
+        .landing-profile-chevron {
+            color: #64748b;
+            font-size: 0.7rem;
+        }
+        .landing-profile-menu {
+            background: #fff;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 1rem;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+            min-width: 13rem;
+            padding: 0.4rem;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 0.55rem);
+            z-index: 60;
+        }
+        .landing-profile-menu a,
+        .landing-profile-menu button {
+            background: transparent;
+            border: 0;
+            border-radius: 0.65rem;
+            color: #334155;
+            display: block;
+            font: inherit;
+            font-size: 0.85rem;
+            padding: 0.65rem 0.75rem;
+            text-align: left;
+            text-decoration: none;
+            width: 100%;
+        }
+        .landing-profile-menu a:hover,
+        .landing-profile-menu button:hover {
+            background: #eef2ff;
+            color: #3730a3;
         }
 
         .hero-bg {
             background:
-                radial-gradient(circle at 15% 18%, rgba(99, 102, 241, 0.18), transparent 18%),
-                radial-gradient(circle at 80% 10%, rgba(59, 130, 246, 0.16), transparent 16%),
-                linear-gradient(135deg, rgba(255,255,255,0.72), rgba(248,250,252,0.78));
+                radial-gradient(ellipse 80% 60% at 15% 20%, rgba(99, 102, 241, 0.15), transparent),
+                radial-gradient(ellipse 60% 50% at 80% 5%,  rgba(59, 130, 246, 0.12), transparent),
+                radial-gradient(ellipse 50% 60% at 50% 100%, rgba(14, 165, 233, 0.08), transparent),
+                linear-gradient(160deg, rgba(255,255,255,0.85), rgba(248,250,252,0.90));
+        }
+
+        /* ===== HERO HEADING TYPING CURSOR ===== */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 0.85em;
+            background: #6366f1;
+            margin-left: 3px;
+            vertical-align: middle;
+            border-radius: 2px;
+            animation: blink-caret 1s step-end infinite;
+        }
+        @keyframes blink-caret {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 28%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 40%, #0ea5e9 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            background-size: 200% auto;
+            animation: shimmer-text 4s linear infinite;
+        }
+        @keyframes shimmer-text {
+            0%   { background-position: 0%   center; }
+            50%  { background-position: 100% center; }
+            100% { background-position: 0%   center; }
         }
 
         .primary-btn {
             background: linear-gradient(135deg, #4f46e5 0%, #6366f1 35%, #8b5cf6 100%);
-            box-shadow: 0 20px 30px rgba(99, 102, 241, 0.34);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-size: 200% auto;
+            box-shadow: 0 16px 28px rgba(99, 102, 241, 0.34);
+            transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease, background-position 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
-
+        .primary-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
         .primary-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 26px 34px rgba(99, 102, 241, 0.42);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 28px 40px rgba(99, 102, 241, 0.45);
+            background-position: right center;
+        }
+        .primary-btn:hover::after { opacity: 1; }
+        .primary-btn:active {
+            transform: translateY(-1px) scale(0.99);
+            box-shadow: 0 12px 20px rgba(99, 102, 241, 0.30);
         }
 
         .item-card {
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s ease, box-shadow 0.35s ease;
+            will-change: transform;
         }
-
         .item-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(99, 102, 241, 0.35);
-            box-shadow: 0 18px 40px rgba(79, 70, 229, 0.12);
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(99, 102, 241, 0.40);
+            box-shadow: 0 24px 50px rgba(79, 70, 229, 0.18);
         }
+        .item-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(14,165,233,0.04));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .item-card:hover::before { opacity: 1; }
 
         .status-pill {
             display: inline-flex;
@@ -97,6 +288,204 @@
             color: #f43f5e;
         }
 
+        /* ===== STEP CARDS (cara pinjam) ===== */
+        .step-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease, border-color 0.3s ease;
+        }
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(99,102,241,0.07), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+        .step-card:hover::before { opacity: 1; }
+        .step-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 32px 60px rgba(99,102,241,0.14);
+            border-color: rgba(99,102,241,0.30);
+        }
+        .step-number {
+            position: relative;
+            font-size: 1.25rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4f46e5, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* ===== BENTO CARDS ===== */
+        .bento-card {
+            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+        }
+        .bento-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 80px rgba(15,23,42,0.28);
+        }
+
+        /* ===== STAT COUNTER ===== */
+        .stat-counter { font-variant-numeric: tabular-nums; }
+
+        /* ===== BADGE PULSE ===== */
+        .live-badge {
+            position: relative;
+        }
+        .live-badge::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: rgba(52,211,153,0.4);
+            animation: ping-badge 2s cubic-bezier(0,0,0.2,1) infinite;
+        }
+        @keyframes ping-badge {
+            75%, 100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* ===== SHIMMER CARD BORDER ===== */
+        .shimmer-border {
+            position: relative;
+        }
+        .shimmer-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.5) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer-border 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .shimmer-border:hover::after { opacity: 1; }
+        @keyframes shimmer-border {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ===== FAQ ACCORDION ===== */
+        .faq-item {
+            border-radius: 1.25rem;
+            border: 1px solid rgba(148,163,184,0.25);
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px rgba(15,23,42,0.05);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .faq-item:hover {
+            box-shadow: 0 12px 32px rgba(99,102,241,0.10);
+            border-color: rgba(99,102,241,0.22);
+        }
+        .faq-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 1.25rem 1.5rem;
+            list-style: none;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            user-select: none;
+        }
+        .faq-summary::-webkit-details-marker { display: none; }
+        .faq-icon {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 9999px;
+            background: rgba(99,102,241,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6366f1;
+            transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), background 0.3s ease;
+        }
+        details[open] .faq-icon {
+            transform: rotate(45deg);
+            background: rgba(99,102,241,0.18);
+        }
+        .faq-body {
+            padding: 0 1.5rem 1.25rem;
+            color: #475569;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* ===== STATS SECTION ===== */
+        .stats-section {
+            position: relative;
+            overflow: hidden;
+        }
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 80% at 50% 50%, rgba(99,102,241,0.06), transparent);
+            pointer-events: none;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-radius: 1.5rem;
+            background: rgba(255,255,255,0.55);
+            border: 1px solid rgba(148,163,184,0.18);
+            backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(99,102,241,0.12);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(255,255,255,0.65);
+            border-top: 1px solid rgba(148,163,184,0.22);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        /* ===== SECTION DECORATIVE DIVIDER ===== */
+        .section-divider {
+            width: 80px;
+            height: 4px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #4f46e5, #8b5cf6, #0ea5e9);
+            margin: 1rem auto 0;
+        }
+
+        /* ===== GRADIENT PILL ===== */
+        .gradient-pill {
+            background: linear-gradient(135deg, rgba(79,70,229,0.10), rgba(139,92,246,0.10));
+            border: 1px solid rgba(99,102,241,0.18);
+            color: #4f46e5;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .timeline-dot {
             position: absolute;
             left: -0.5rem;
@@ -111,8 +500,11 @@
         .timeline-item {
             position: relative;
             padding-left: 1.6rem;
+            transition: transform 0.2s ease;
         }
-
+        .timeline-item:hover {
+            transform: translateX(4px);
+        }
         .timeline-item::before {
             content: "";
             position: absolute;
@@ -122,14 +514,15 @@
             width: 2px;
             background: linear-gradient(180deg, rgba(52, 211, 153, 0.9), rgba(99, 102, 241, 0.3));
         }
-
         .timeline-item:last-child::before {
             display: none;
         }
 
         .search-result:hover {
-            background: rgba(99, 102, 241, 0.08);
+            background: rgba(99, 102, 241, 0.10);
+            border-radius: 1rem;
         }
+        .search-result { transition: background 0.2s ease; border-radius: 1rem; }
 
         .ambient-background {
             position: fixed;
@@ -204,34 +597,117 @@
             to { transform: translate3d(24px, -32px, 0) scale(1.06); opacity: 0.94; }
         }
 
-        main,
-        footer {
+        main {
             position: relative;
             z-index: 1;
         }
 
         @media (max-width: 640px) {
-            .ambient-background::before {
-                background-size: 64px 64px;
-            }
-
-            .ambient-background::after {
-                opacity: 0.16;
-            }
-
+            .ambient-background::before { background-size: 64px 64px; }
+            .ambient-background::after  { opacity: 0.16; }
             .ambient-orb--indigo,
             .ambient-orb--violet,
-            .ambient-orb--cyan {
-                scale: 0.78;
+            .ambient-orb--cyan { scale: 0.78; }
+            .landing-profile-copy { display: none; }
+            .landing-profile summary { padding-right: 0.55rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-orb,
+            .gradient-text,
+            .shimmer-border::after,
+            .reveal, .reveal-left, .reveal-right {
+                animation: none !important;
+                transition: none !important;
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
 
+        .hero-visual {
+            isolation: isolate;
+            padding: 2.25rem 0 1rem;
+        }
+        .inventory-summary-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            box-shadow: 0 24px 55px rgba(49, 46, 129, 0.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+        .inventory-metric {
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(248, 250, 252, 0.86);
+        }
+        .hero-photo-frame {
+            position: absolute;
+            inset: 0.5rem 0.5rem 0;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            border-radius: 2rem;
+            box-shadow: 0 32px 70px rgba(15, 23, 42, 0.18);
+        }
+        .hero-photo-frame::after {
+            position: absolute;
+            inset: 0;
+            content: "";
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.04), rgba(15, 23, 42, 0.48));
+        }
+        .hero-photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 44%;
+        }
+        .inventory-panel {
+            position: relative;
+            z-index: 1;
+            margin: 1.6rem 1.35rem 0;
+            background: rgba(15, 23, 42, 0.88);
+            border-color: rgba(255, 255, 255, 0.32);
+            box-shadow: 0 28px 64px rgba(15, 23, 42, 0.3);
+        }
+        .weekly-chart {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+        .weekly-chart-bar {
+            min-width: 0;
+            border-radius: 0.55rem 0.55rem 0.2rem 0.2rem;
+            background: linear-gradient(180deg, #67e8f9, #6366f1);
+            box-shadow: 0 0 16px rgba(103, 232, 249, 0.16);
+            transform-origin: bottom;
+            animation: bar-arrive 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .weekly-chart-bar:nth-child(2) { animation-delay: 0.06s; }
+        .weekly-chart-bar:nth-child(3) { animation-delay: 0.12s; }
+        .weekly-chart-bar:nth-child(4) { animation-delay: 0.18s; }
+        .weekly-chart-bar:nth-child(5) { animation-delay: 0.24s; }
+        .weekly-chart-bar:nth-child(6) { animation-delay: 0.3s; }
+        .weekly-chart-bar:nth-child(7) { animation-delay: 0.36s; }
+        @keyframes bar-arrive {
+            from { transform: scaleY(0.2); opacity: 0.4; }
+            to { transform: scaleY(1); opacity: 1; }
+        }
+        .weekly-chart-labels {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.5rem;
+            color: rgba(203, 213, 225, 0.7);
+            font-size: 0.6rem;
+            text-align: center;
+        }
+        @media (max-width: 639px) {
+            .hero-bg { padding-top: 7rem !important; padding-bottom: 1rem !important; }
+            .hero-bg form { margin-top: 1.5rem !important; }
+            .hero-bg .mt-6.flex.flex-wrap { margin-top: 1rem !important; }
+            .hero-visual { padding-top: 0.5rem; }
+            .hero-photo-frame { inset: 0.25rem 0 0; }
+            .inventory-panel { margin: 0.5rem 0.65rem 0; padding: 1rem; }
+            .weekly-chart, .weekly-chart-labels { display: none; }
+        }
         @media (prefers-reduced-motion: reduce) {
-            .ambient-orb {
-                animation: none;
-                transition: none;
-                translate: none;
-            }
+            .weekly-chart-bar { animation: none; }
         }
     </style>
 </head>
@@ -261,15 +737,33 @@
                 </div>
 
                 @if (auth()->check())
-                    <a href="{{ route('dashboard') }}" class="primary-btn inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white sm:px-5">
-                        Dashboard
-                        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
-                            <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </a>
+                    <details class="landing-profile">
+                        <summary aria-label="Buka menu profil">
+                            @if (auth()->user()->avatar_path)
+                                <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" alt="" class="landing-profile-avatar">
+                            @else
+                                <span class="landing-profile-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            @endif
+                            <span class="landing-profile-copy">
+                                <span class="landing-profile-name">{{ auth()->user()->name }}</span>
+                                <span class="landing-profile-role">{{ auth()->user()->role === 'admin' ? 'Admin Sarpras' : (auth()->user()->role === 'guru' ? 'Guru' : 'Siswa') }}</span>
+                            </span>
+                            <svg aria-hidden="true" class="landing-profile-chevron" viewBox="0 0 16 16" fill="none">
+                                <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" />
+                            </svg>
+                        </summary>
+                        <div class="landing-profile-menu">
+                            <a href="{{ route('dashboard') }}">Dashboard</a>
+                            <a href="{{ route('profile.edit') }}">{{ auth()->user()->role === 'admin' ? 'Profil Admin' : 'Profil Saya' }}</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit">Keluar</button>
+                            </form>
+                        </div>
+                    </details>
                 @else
                     <a href="{{ route('login') }}" class="primary-btn inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white sm:px-5">
-                        Masuk / Pinjam Sekarang
+                        Masuk ke Sistem
                         <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
                             <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -290,13 +784,25 @@
                         </div>
 
                         <h1 class="max-w-3xl text-4xl font-black leading-[0.92] tracking-[-0.06em] text-slate-900 sm:text-5xl lg:text-7xl">
-                            Pinjam Fasilitas Sekolah:
-                            <span class="gradient-text">Cepat, Transparan, &amp; Tanpa Ribet.</span>
+                            Inventaris &amp; Peminjaman Barang Sekolah
+                            <span class="gradient-text">Lebih Rapi, Cepat, dan Transparan.</span>
                         </h1>
 
                         <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">
                             Sistem manajemen inventaris pintar untuk siswa, guru, dan sarpras sekolah.
                         </p>
+
+                        <div class="mt-7 flex flex-wrap items-center gap-3">
+                            <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="primary-btn inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold text-white">
+                                Masuk ke Sistem
+                                <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                                    <path d="M4.5 10h11m-4.5-4.5L15.5 10 11 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                            <a href="#katalog" class="inline-flex items-center rounded-full border border-indigo-200 bg-white/70 px-5 py-3 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-white">
+                                Jelajahi katalog
+                            </a>
+                        </div>
 
                         <form id="landing-search-form" class="mt-10">
                             <div class="rounded-[1.7rem] border border-indigo-200/60 bg-slate-950/90 p-3 shadow-[0_24px_40px_rgba(15,23,42,0.18)]">
@@ -339,9 +845,12 @@
                     </div>
 
                     <div class="relative z-10">
-                        <div class="relative mx-auto max-w-xl">
+                        <div class="hero-visual relative mx-auto max-w-xl">
                             @php($weeklyScale = max(1, max($weeklyLoans)))
-                            <div class="glass rounded-[2rem] p-5 text-white shadow-[0_35px_75px_rgba(79,70,229,0.18)]">
+                            <div class="hero-photo-frame" aria-hidden="true">
+                                <img src="{{ asset('images/landing-classroom.jpg') }}" alt="" fetchpriority="high">
+                            </div>
+                            <div class="glass inventory-panel rounded-[2rem] p-5 text-white shadow-[0_35px_75px_rgba(79,70,229,0.18)]">
                                 <div class="flex items-center justify-between border-b border-white/10 pb-4">
                                     <div>
                                         <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-100">Inventaris terkini</p>
@@ -355,10 +864,19 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-6 flex items-end justify-between gap-3" role="img" aria-label="Aktivitas peminjaman tujuh hari terakhir">
-                                    <div class="flex h-28 w-full items-end gap-2">
+                                <div class="mt-6" role="img" aria-label="Aktivitas peminjaman tujuh hari terakhir">
+                                    <div class="mb-2 flex items-center justify-between text-[10px] text-slate-300">
+                                        <span>Aktivitas 7 hari terakhir</span>
+                                        <strong class="font-semibold text-cyan-200">{{ number_format($weeklyTotal, 0, ',', '.') }} transaksi</strong>
+                                    </div>
+                                    <div class="weekly-chart h-24 items-end">
                                         @foreach ($weeklyLoans as $loan)
-                                            <div class="flex-1 rounded-t-xl bg-gradient-to-t from-indigo-500 to-cyan-300" style="height: {{ $loan > 0 ? max(8, ($loan / $weeklyScale) * 100) : 0 }}%"></div>
+                                            <div class="weekly-chart-bar" style="height: {{ $loan > 0 ? max(8, ($loan / $weeklyScale) * 100) : 3 }}%"></div>
+                                        @endforeach
+                                    </div>
+                                    <div class="weekly-chart-labels mt-2">
+                                        @foreach ($weeklyLabels as $label)
+                                            <span>{{ $label }}</span>
                                         @endforeach
                                     </div>
                                 </div>
@@ -463,32 +981,37 @@
                     </div>
 
                     <div class="md:col-span-5">
-                        <div class="bento-card h-full rounded-[2rem] border border-slate-200/80 bg-slate-950 p-6 shadow-[0_24px_55px_rgba(15,23,42,0.18)] sm:p-7">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-300">Pratinjau QR</p>
-                                    <h3 class="mt-2 text-2xl font-bold text-white">Verifikasi pengembalian</h3>
-                                </div>
-                                <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-indigo-300/20 bg-indigo-500/10 text-indigo-200">
-                                    <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                                        <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-2zM14 18h2v2h-2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                        <div class="inventory-summary-card h-full rounded-[2rem] p-6 sm:p-7">
+                            <div class="flex items-center gap-4">
+                                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                                    <svg aria-hidden="true" class="h-6 w-6" viewBox="0 0 24 24" fill="none">
+                                        <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                                        <path d="m4.5 7.8 7.5 4.4 7.5-4.4M12 12.2V21" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
                                     </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600">Ringkasan inventaris</p>
+                                    <h3 class="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">Semua barang terkelola</h3>
                                 </div>
                             </div>
 
-                            <div class="mt-8 rounded-[1.8rem] border border-white/10 bg-slate-900/80 p-6 text-center">
-                                <div class="mx-auto flex max-w-[180px] items-center justify-center rounded-2xl border border-indigo-400/20 bg-white/[0.03] p-4 shadow-[inset_0_0_25px_rgba(99,102,241,0.08)]">
-                                    <svg aria-hidden="true" class="h-28 w-28 text-indigo-500" viewBox="0 0 49 49" fill="currentColor">
-                                        <path d="M0 0h17v17H0zM32 0h17v17H32zM0 32h17v17H0z" />
-                                        <path d="M4 4h9v9H4zM36 4h9v9h-9zM4 36h9v9H4z" fill="#0f172a" />
-                                        <path d="M23 2h5v5h-5zM20 11h4v4h-4zM23 20h6v6h-6zM32 21h5v5h-5zM41 21h4v4h-4zM19 29h5v5h-5zM27 31h4v4h-4zM35 30h6v6h-6zM21 39h5v5h-5zM29 40h5v5h-5zM39 40h7v7h-7z" />
-                                    </svg>
+                            <div class="mt-7 grid grid-cols-2 gap-3">
+                                <div class="inventory-metric rounded-2xl p-4">
+                                    <p class="text-xs font-medium text-slate-500">Jenis barang</p>
+                                    <p class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">{{ number_format($totalBarang, 0, ',', '.') }}</p>
                                 </div>
-
-                                <p class="mt-5 text-sm text-slate-300">Contoh kode QR pada bukti peminjaman.</p>
-                                <a href="<?php echo e(auth()->check() ? route('dashboard') : route('login')); ?>" class="mt-4 inline-flex rounded-full border border-indigo-300/25 bg-indigo-500/15 px-4 py-2 text-sm font-semibold text-indigo-100 transition hover:bg-indigo-500/25">
-                                    <?php echo e(auth()->check() ? 'Buka dashboard' : 'Masuk ke sistem'); ?>
-                                </a>
+                                <div class="inventory-metric rounded-2xl p-4">
+                                    <p class="text-xs font-medium text-slate-500">Unit tersedia</p>
+                                    <p class="mt-2 text-2xl font-extrabold tracking-tight text-indigo-700">{{ number_format($barangTersedia, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="inventory-metric rounded-2xl p-4">
+                                    <p class="text-xs font-medium text-slate-500">Sedang dipinjam</p>
+                                    <p class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">{{ number_format($sedangDipinjam, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="inventory-metric rounded-2xl p-4">
+                                    <p class="text-xs font-medium text-slate-500">Kategori</p>
+                                    <p class="mt-2 text-2xl font-extrabold tracking-tight text-slate-900">{{ number_format($kategoriBarang, 0, ',', '.') }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -121,6 +121,8 @@
     let deleteBarangUrl = null;
 
     if (deleteBarangModal) {
+        document.body.appendChild(deleteBarangModal);
+
         deleteBarangModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
             deleteBarangUrl = button.getAttribute('data-delete-url');

@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistem inventaris sekolah modern untuk peminjaman barang secara cepat, transparan, dan efisien.">
-    <title>Peminjaman Barang Sekolah</title>
+    <title>Peminjaman Barang | Inventaris Sekolah</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
