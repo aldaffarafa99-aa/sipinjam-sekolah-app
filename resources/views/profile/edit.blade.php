@@ -9,7 +9,7 @@
         <p class="text-muted mb-0">Perbarui foto, nama, dan alamat email akunmu.</p>
     </div>
     @if ($user->avatar_path)
-        <img src="{{ asset('storage/' . $user->avatar_path) }}" alt="Foto profil" class="profile-avatar profile-avatar-image">
+        <img src="{{ $user->avatar_url }}" alt="Foto profil" class="profile-avatar profile-avatar-image">
     @else
         <span class="profile-avatar">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
     @endif

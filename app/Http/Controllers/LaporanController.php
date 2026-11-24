@@ -12,7 +12,7 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         $query = $this->filteredQuery($request);
-        $peminjaman = (clone $query)->with(['barang', 'user'])->latest()->paginate(20)->withQueryString();
+        $peminjaman = (clone $query)->with(['barang', 'user'])->latest()->paginate(5)->withQueryString();
         $totalPinjaman = (clone $query)->count();
         $totalUnit = (clone $query)->sum('jumlah');
 

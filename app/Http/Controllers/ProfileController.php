@@ -29,18 +29,22 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $user->fill($request->validated());
+        $avatarDisk = Storage::disk(config('filesystems.avatar_disk'));
 
         if ($request->boolean('remove_avatar') && $user->avatar_path) {
-            Storage::disk('public')->delete($user->avatar_path);
+            $avatarDisk->delete($user->avatar_path);
             $user->avatar_path = null;
         }
 
         if ($request->hasFile('avatar')) {
             $oldAvatar = $user->avatar_path;
-            $user->avatar_path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar_path = $request->file('avatar')->store(
+                'avatars',
+                config('filesystems.avatar_disk')
+            );
 
             if ($oldAvatar) {
-                Storage::disk('public')->delete($oldAvatar);
+                $avatarDisk->delete($oldAvatar);
             }
         }
 

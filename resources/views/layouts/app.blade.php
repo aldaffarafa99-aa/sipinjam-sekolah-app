@@ -65,7 +65,7 @@
             <li class="nav-item dropdown profile-nav-item">
                 <button type="button" class="profile-nav-link" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Buka menu profil">
                     @if (auth()->user()->avatar_path)
-                        <img src="{{ asset('storage/' . auth()->user()->avatar_path) }}" alt="Foto profil" class="user-avatar user-avatar-image">
+                        <img src="{{ auth()->user()->avatar_url }}" alt="Foto profil" class="user-avatar user-avatar-image">
                     @else
                         <span class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                     @endif

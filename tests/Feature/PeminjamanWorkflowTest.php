@@ -147,7 +147,33 @@ class PeminjamanWorkflowTest extends TestCase
             'status' => 'dipinjam',
         ]);
 
-        $this->actingAs($admin)->get('/laporan')->assertOk();
+        for ($i = 0; $i < 6; $i++) {
+            Peminjaman::create([
+                'barang_id' => $barang->id,
+                'user_id' => $user->id,
+                'nama_peminjam' => 'Peminjam Pagination',
+                'kelas_jabatan' => 'X IPA 1',
+                'jumlah' => 1,
+                'tanggal_pinjam' => today()->subDays($i + 1),
+                'tanggal_kembali_rencana' => today()->addDay(),
+                'status' => 'pending',
+            ]);
+        }
+
+        $this->actingAs($admin)
+            ->get('/laporan?search=Peminjam')
+            ->assertOk()
+            ->assertSee('<th>NO</th>', false)
+            ->assertSee('<td>1</td>', false)
+            ->assertSee('<td>5</td>', false)
+            ->assertSee('search=Peminjam&amp;page=2', false);
+
+        $this->actingAs($admin)
+            ->get('/laporan?search=Peminjam&page=2')
+            ->assertOk()
+            ->assertSee('<td>6</td>', false)
+            ->assertDontSee('<td>5</td>', false);
+
         $this->actingAs($admin)->get('/laporan/export')->assertDownload();
 
         $this->artisan('peminjaman:ingatkan-pengembalian')->assertExitCode(0);
