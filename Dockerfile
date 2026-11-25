@@ -1,4 +1,3 @@
-# --- Stage 1: build aset Vite ---
 FROM node:22-alpine AS assets
 WORKDIR /app
 COPY package*.json ./
@@ -6,37 +5,45 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# --- Stage 2: PHP + Apache ---
-FROM php:8.3-apache
+FROM dunglas/frankenphp:1-php8.4-bookworm AS base
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && install-php-extensions intl zip gd bcmath pdo_pgsql
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-        libpq-dev libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libonig-dev unzip git \
-    && docker-php-ext-configure gd --with-jpeg --with-freetype \
-    && docker-php-ext-install pdo_mysql pdo_pgsql zip gd bcmath mbstring opcache \
-    && a2enmod rewrite \
-    && rm -rf /var/lib/apt/lists/*
-
+FROM base AS dependencies
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --no-scripts \
+    --optimize-autoloader \
+    --prefer-dist
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf \
-    /etc/apache2/conf-available/*.conf
-
-WORKDIR /var/www/html
 COPY . .
 COPY --from=assets /app/public/build ./public/build
+RUN mkdir -p \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        bootstrap/cache \
+    && composer dump-autoload --no-dev --classmap-authoritative
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+FROM base AS runtime
+COPY --from=dependencies --chown=www-data:www-data /app /app
+COPY --chown=www-data:www-data Caddyfile /etc/frankenphp/Caddyfile
 
-RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp \
+    && chown -R www-data:www-data /config/caddy /data/caddy
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh
+ENV PORT=80 \
+    APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    CACHE_STORE=array \
+    SESSION_DRIVER=cookie \
+    QUEUE_CONNECTION=sync
 
-EXPOSE 8080
-CMD ["docker-entrypoint.sh"]
+USER www-data
+CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile"]
