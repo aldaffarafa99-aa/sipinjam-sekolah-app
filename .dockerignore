@@ -1,0 +1,9 @@
+.git
+node_modules
+vendor
+.env
+bootstrap/cache/*.php
+storage/logs/*
+public/build
+public/hot
+*.zip
